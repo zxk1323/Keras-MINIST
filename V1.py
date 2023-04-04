@@ -1,14 +1,14 @@
 import numpy as np
-import tensorflow as tf
+import keras.backend as K
 from tensorflow import keras
 from sklearn.manifold import TSNE
 
 input_shape = (28, 28, 1)
 #对比损失函数
 def contrastive_loss(y_true, y_pred, margin=1.0):
-    square_pred = tf.square(y_pred)
-    margin_square = tf.square(tf.maximum(margin - y_pred, 0))
-    return tf.reduce_mean(y_true * square_pred + (1 - y_true) * margin_square)
+    square_pred = K.square(y_pred)
+    margin_square = K.square(K.maximum(margin - y_pred, 0))
+    return K.mean(y_true * square_pred + (1 - y_true) * margin_square)
 
 #自定义DataGenerater生成minibatch的样本图片和标签进行训练
 class DataGenerator(keras.utils.Sequence):

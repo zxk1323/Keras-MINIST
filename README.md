@@ -1,2 +1,5 @@
 # Keras-MINIST
-使用对比学习对MNIST数据集进行预训练和分类
+### 使用对比学习对MNIST数据集进行预训练
+### TSNE 可视化
+![](./myplot.png)
+### MLP 进行分类

@@ -55,7 +55,7 @@ pretraining_model.compile(optimizer='adam', loss=contrastive_loss)
 #使用小批量数据生成器训练模型
 batch_size = 128
 data_generator = DataGenerator(x_train, y_train, batch_size)
-pretraining_model.fit(data_generator, epochs=10)
+pretraining_model.fit(data_generator, epochs=20)
 
 #使用预训练模型提取编码特征
 encoder = keras.Model(inputs=inputs, outputs=encoded)

@@ -68,18 +68,18 @@ x_test = x_test.reshape(-1, 28, 28, 1)
 anchor_input = layers.Input(shape=input_shape, name="anchor_input")
 positive_input = layers.Input(shape=input_shape, name="positive_input")
 
-encoder = keras.Sequential(
-    [
-        layers.Conv2D(32, (3, 3), activation="relu", input_shape=input_shape),
-        layers.MaxPooling2D((2, 2)),
-        layers.Conv2D(64, (3, 3), activation="relu"),
-        layers.MaxPooling2D((2, 2)),
-        layers.Flatten(),
-        layers.Dense(64, activation="relu"),
-    ],
-    name="encoder",
-)
-# 将锚点，正样本，负样本传入编码器
+#定义用于预训练的模型体系结构
+inputs = keras.Input(input_shape)
+x = keras.layers.Conv2D(32, (3, 3), activation="relu")(inputs)
+x = keras.layers.MaxPooling2D((2, 2))(x)
+x = keras.layers.Conv2D(64, (3, 3), activation="relu")(x)
+x = keras.layers.MaxPooling2D((2, 2))(x)
+x = keras.layers.Flatten()(x)
+encoded = keras.layers.Dense(64, activation='relu')(x)
+outputs = keras.layers.Dense(64)(encoded)
+encoder = keras.Model(inputs=inputs, outputs=outputs)
+
+# 将锚点，正样本，传入编码器
 encoded_anchor = encoder(anchor_input)
 encoded_positive = encoder(positive_input)
 
@@ -96,8 +96,8 @@ data_generator = DataGenerator(x_train, y_train, batch_size)
 pretraining_model.fit(data_generator, epochs=epochs)
 
 # 获取编码器
-encoder = pretraining_model.get_layer("encoder")
 # 使用预训练模型提取编码特征
+encoder = keras.Model(inputs=inputs, outputs=encoded)
 x_train_encoded = encoder.predict(x_train)
 x_test_encoded = encoder.predict(x_test)
 
